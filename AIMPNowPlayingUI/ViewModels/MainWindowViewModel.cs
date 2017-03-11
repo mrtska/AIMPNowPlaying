@@ -18,6 +18,12 @@ namespace AIMPNowPlayingUI.ViewModels {
     public class MainWindowViewModel : ViewModel {
 
 
+        public MainWindowViewModel() {
+
+        }
+
+
+
         public void Initialize() {
 
             

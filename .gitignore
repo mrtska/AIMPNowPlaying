@@ -240,3 +240,6 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+/AIMPNowPlaying/AIMPNowPlaying
+/AIMPNowPlaying/AIMPNowPlaying/AIMPNowPlayingUI.dll
+/AIMPNowPlaying/AIMPNowPlaying/AIMPNowPlaying.dll

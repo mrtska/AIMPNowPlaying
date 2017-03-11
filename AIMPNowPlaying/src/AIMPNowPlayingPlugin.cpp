@@ -60,9 +60,7 @@ namespace AIMPNowPlaying {
 
 		Core = core;
 
-
 		AIMPNowPlayingUI::StartUp::Initialize();
-
 
 		System::AppDomain::CurrentDomain->AssemblyResolve -= gcnew System::ResolveEventHandler(&OnAssemblyResolve);
 
@@ -79,7 +77,5 @@ namespace AIMPNowPlaying {
 
 
 	}
-
-
 }
 

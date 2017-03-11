@@ -23,19 +23,9 @@ System::Reflection::Assembly ^ OnAssemblyResolve(System::Object ^sender, System:
 
 	if (name->Name + ".dll" == "AIMPNowPlayingUI.dll") {
 
-		MessageBox(NULL, context.marshal_as<const TCHAR*>(directory + "\\" + name->Name + ".dll"), "UI DLLÇ¬Ç§Ç©ÅI", MB_OK);
 		return Assembly::LoadFile(directory + "\\" + name->Name + ".dll");
 	} else {
 
-		MessageBox(NULL, "UL Ç≥ÇƒÇÁÇ¢Ç∆ DLL Ç‹Ç¶ÅI", "ÇËÇºÇÈÇ‘", MB_OK);
-
-		for each(System::String ^str in Assembly::LoadFile(directory + "\\" + name->Name + ".dll")->GetManifestResourceNames()) {
-
-			MessageBox(NULL, context.marshal_as<const TCHAR*>(str), "ÇËÇºÇÈÇ‘", MB_OK);
-		}
-
-
-		MessageBox(NULL, "UL Ç≥ÇƒÇÁÇ¢Ç∆ DLL Ç†Ç∆ÅI", "ÇËÇºÇÈÇ‘", MB_OK);
 		return nullptr;
 	}
 }
