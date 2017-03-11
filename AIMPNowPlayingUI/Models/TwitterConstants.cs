@@ -8,29 +8,8 @@ using Livet;
 namespace AIMPNowPlayingUI.Models {
     public class TwitterConstants : NotificationObject {
 
+        internal const string ConsumerKey = "(´・ω・｀)";
 
-        internal const string ConsumerKey = "見せられないよ！";
-
-        internal const string ConsumerSecret = "見せられないよ！！";
-
-        public TwitterConstants() {
-
-
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        internal const string ConsumerSecret = "(´・ω・｀)";
     }
 }
