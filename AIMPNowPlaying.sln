@@ -1,9 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AIMPNowPlaying", "AIMPNowPlaying\AIMPNowPlaying.vcxproj", "{A740D501-2F66-4FF6-AE55-745EE0B0455F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C12898AA-FFA2-4C24-9487-C6B825E609DB} = {C12898AA-FFA2-4C24-9487-C6B825E609DB}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AIMPNowPlayingUI", "AIMPNowPlayingUI\AIMPNowPlayingUI.csproj", "{C12898AA-FFA2-4C24-9487-C6B825E609DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +26,12 @@ Global
 		{A740D501-2F66-4FF6-AE55-745EE0B0455F}.Release|x64.Build.0 = Release|x64
 		{A740D501-2F66-4FF6-AE55-745EE0B0455F}.Release|x86.ActiveCfg = Release|Win32
 		{A740D501-2F66-4FF6-AE55-745EE0B0455F}.Release|x86.Build.0 = Release|Win32
+		{C12898AA-FFA2-4C24-9487-C6B825E609DB}.Debug|x64.ActiveCfg = Debug|x86
+		{C12898AA-FFA2-4C24-9487-C6B825E609DB}.Debug|x86.ActiveCfg = Debug|x86
+		{C12898AA-FFA2-4C24-9487-C6B825E609DB}.Debug|x86.Build.0 = Debug|x86
+		{C12898AA-FFA2-4C24-9487-C6B825E609DB}.Release|x64.ActiveCfg = Release|x86
+		{C12898AA-FFA2-4C24-9487-C6B825E609DB}.Release|x86.ActiveCfg = Release|x86
+		{C12898AA-FFA2-4C24-9487-C6B825E609DB}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

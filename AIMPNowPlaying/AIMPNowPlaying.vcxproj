@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -18,35 +18,89 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\AIMPActionEvent.h" />
+    <ClInclude Include="include\AIMPNowPlaying.h" />
+    <ClInclude Include="include\aimp\apiActions.h" />
+    <ClInclude Include="include\aimp\apiAlbumArt.h" />
+    <ClInclude Include="include\aimp\apiCore.h" />
+    <ClInclude Include="include\aimp\apiDecoders.h" />
+    <ClInclude Include="include\aimp\apiFileManager.h" />
+    <ClInclude Include="include\aimp\apiGUI.h" />
+    <ClInclude Include="include\aimp\apiInternet.h" />
+    <ClInclude Include="include\aimp\apiMenu.h" />
+    <ClInclude Include="include\aimp\apiMessages.h" />
+    <ClInclude Include="include\aimp\apiMUI.h" />
+    <ClInclude Include="include\aimp\apiMusicLibrary.h" />
+    <ClInclude Include="include\aimp\apiObjects.h" />
+    <ClInclude Include="include\aimp\apiOptions.h" />
+    <ClInclude Include="include\aimp\apiPlayer.h" />
+    <ClInclude Include="include\aimp\apiPlaylists.h" />
+    <ClInclude Include="include\aimp\apiPlugin.h" />
+    <ClInclude Include="include\aimp\apiRemote.h" />
+    <ClInclude Include="include\aimp\apiScheduler.h" />
+    <ClInclude Include="include\aimp\apiSkins.h" />
+    <ClInclude Include="include\aimp\apiTagEditor.h" />
+    <ClInclude Include="include\aimp\apiThreading.h" />
+    <ClInclude Include="include\aimp\apiVisuals.h" />
+    <ClInclude Include="include\IUnknownHelper.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="AIMPNowPlaying.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\AIMPNowPlaying.cpp" />
+    <ClCompile Include="src\AIMPNowPlayingPlugin.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AIMPNowPlaying.def" />
+    <None Include="build.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AIMPNowPlayingUI\AIMPNowPlayingUI.csproj">
+      <Project>{c12898aa-ffa2-4c24-9487-c6b825e609db}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Presentation" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A740D501-2F66-4FF6-AE55-745EE0B0455F}</ProjectGuid>
     <RootNamespace>AIMPNowPlaying</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
+    <CLRSupport>true</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
+    <CLRSupport>true</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -68,13 +122,21 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(ProjectDir);$(ProjectDir)include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
+    <Link>
+      <ModuleDefinitionFile>AIMPNowPlaying.def</ModuleDefinitionFile>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell -ExecutionPolicy RemoteSigned -File "$(ProjectDir)build.ps1"  "$(ProjectDir)AIMPNowPlaying" "$(TargetPath)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -82,6 +144,9 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
+    <Link>
+      <ModuleDefinitionFile>AIMPNowPlaying.def</ModuleDefinitionFile>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -94,7 +159,11 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>AIMPNowPlaying.def</ModuleDefinitionFile>
     </Link>
+    <PostBuildEvent>
+      <Command>powershell -ExecutionPolicy RemoteSigned -File "$(ProjectDir)build.ps1" "$(ProjectDir)" "$(TargetPath)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -107,10 +176,9 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>AIMPNowPlaying.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

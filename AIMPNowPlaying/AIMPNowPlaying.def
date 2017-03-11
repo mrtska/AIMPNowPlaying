@@ -1,0 +1,4 @@
+LIBRARY "AIMPNowPlaying"
+
+EXPORTS
+    AIMPPluginGetHeader
