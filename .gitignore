@@ -243,3 +243,5 @@ ModelManifest.xml
 /AIMPNowPlaying/AIMPNowPlaying
 /AIMPNowPlaying/AIMPNowPlaying/AIMPNowPlayingUI.dll
 /AIMPNowPlaying/AIMPNowPlaying/AIMPNowPlaying.dll
+
+/AIMPNowPlayingUI/Models/TwitterConstants.cs

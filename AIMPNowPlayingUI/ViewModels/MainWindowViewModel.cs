@@ -18,15 +18,51 @@ namespace AIMPNowPlayingUI.ViewModels {
     public class MainWindowViewModel : ViewModel {
 
 
+
+        #region PinCode変更通知プロパティ
+        private string _PinCode;
+
+        public string PinCode {
+            get { return _PinCode; }
+            set { 
+                if (_PinCode == value)
+                    return;
+                _PinCode = value;
+                RaisePropertyChanged();
+            }
+        }
+        #endregion
+
+        public string AccessToken;
+        public string AccessTokenSecret;
+
+
+        private TwitterConnector Connector;
+
+        public bool CanTweet = false;
+
+
         public MainWindowViewModel() {
 
+            Connector = new TwitterConnector(this);
+        }
+
+        public void RequestToken() {
+
+            Connector.RequestToken();
+        }
+
+        public void Verify() {
+
+            Connector.Verify(PinCode);
         }
 
 
-
-        public void Initialize() {
+        public void Tweet(string text) {
 
             
         }
+
+
     }
 }

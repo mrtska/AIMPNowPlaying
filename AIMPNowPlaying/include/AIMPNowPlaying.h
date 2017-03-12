@@ -7,6 +7,9 @@
 
 #include "aimp/apiPlugin.h"
 
+using namespace System::Runtime::InteropServices;
+
+
 namespace AIMPNowPlaying {
 
 	class AIMPNowPlayingPlugin : public IUnknownInterface<IAIMPPlugin>, public IAIMPExternalSettingsDialog {
@@ -15,7 +18,10 @@ namespace AIMPNowPlaying {
 
 		IAIMPCore *Core;
 
+		IAIMPConfig *Config;
 
+		GCHandle ViewModelRoot;
+		
 
 	public:
 
@@ -26,12 +32,13 @@ namespace AIMPNowPlaying {
 		PWCHAR WINAPI InfoGet(int Index);
 		DWORD WINAPI InfoGetCategories();
 		// Initialization / Finalization
+		void UIInitialize();
+
 		HRESULT WINAPI Initialize(IAIMPCore* Core);
 		HRESULT WINAPI Finalize();
 		// System Notifications
 		void WINAPI SystemNotification(int NotifyID, IUnknown* Data);
 		virtual void WINAPI Show(HWND ParentWindow);
-
 
 		virtual unsigned long WINAPI AddRef(void) {
 
@@ -60,6 +67,33 @@ namespace AIMPNowPlaying {
 			}
 
 			return E_NOINTERFACE;
+		}
+
+		IAIMPString *CreateAIMPString(wchar_t *str) {
+
+			IAIMPString *aimpStr;
+
+			if (Core) {
+
+				if (SUCCEEDED(Core->CreateObject(IID_IAIMPString, reinterpret_cast<void**>(&aimpStr)))) {
+
+					aimpStr->SetData(str, wcslen(str));
+					return aimpStr;
+				}
+			}
+
+			
+			return nullptr;
+		}
+
+		IAIMPCore *GetCore() {
+
+			return Core;
+		}
+
+		IAIMPConfig *GetConfig() {
+
+			return Config;
 		}
 
 	};
