@@ -58,9 +58,9 @@ namespace AIMPNowPlayingUI.ViewModels {
         }
 
 
-        public void Tweet(string text) {
+        public void Tweet(string text, string jacketPath) {
 
-            
+            Connector.Tweet(text, jacketPath);
         }
 
 

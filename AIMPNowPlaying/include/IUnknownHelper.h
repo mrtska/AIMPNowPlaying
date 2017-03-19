@@ -30,8 +30,6 @@ public:
 		return E_NOINTERFACE;
 	}
 
-
-	
 	virtual unsigned long WINAPI AddRef(void) {
 
 		return reference_count++;
@@ -47,14 +45,10 @@ public:
 		return reference_count;
 	}
 
-
-
 private:
 
 	//QÆ‚³‚ê‚Ä‚¢‚é”
 	unsigned long reference_count;
-	
-
 };
 
 

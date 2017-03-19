@@ -2,10 +2,16 @@
 
 
 #include <Windows.h>
+#include <msclr/marshal.h>
 
 #include "IUnknownHelper.h"
 
 #include "aimp/apiPlugin.h"
+#include "aimp/apiOptions.h"
+#include "aimp/apiPlaylists.h"
+#include "aimp/apiMenu.h"
+#include "aimp/apiAlbumArt.h"
+#include "aimp/apiPlayer.h"
 
 using namespace System::Runtime::InteropServices;
 
@@ -15,10 +21,17 @@ namespace AIMPNowPlaying {
 	class AIMPNowPlayingPlugin : public IUnknownInterface<IAIMPPlugin>, public IAIMPExternalSettingsDialog {
 
 	private:
-
 		IAIMPCore *Core;
 
 		IAIMPConfig *Config;
+
+		IAIMPServiceMenuManager *MenuManager;
+
+		IAIMPServiceActionManager *ActionManager;
+
+		IAIMPServiceAlbumArt *AlbumArt;
+
+		IAIMPServicePlayer *Player;
 
 		GCHandle ViewModelRoot;
 		
@@ -39,6 +52,8 @@ namespace AIMPNowPlaying {
 		// System Notifications
 		void WINAPI SystemNotification(int NotifyID, IUnknown* Data);
 		virtual void WINAPI Show(HWND ParentWindow);
+
+		void Tweet(System::String ^text, System::String ^jacketPath);
 
 		virtual unsigned long WINAPI AddRef(void) {
 
@@ -81,8 +96,24 @@ namespace AIMPNowPlaying {
 					return aimpStr;
 				}
 			}
+			return nullptr;
+		}
 
-			
+		IAIMPString *CreateAIMPString(System::String ^string) {
+
+			IAIMPString *aimpStr;
+
+			if (Core) {
+
+				msclr::interop::marshal_context context;
+				const wchar_t *str = context.marshal_as<const wchar_t*>(string);
+
+				if (SUCCEEDED(Core->CreateObject(IID_IAIMPString, reinterpret_cast<void**>(&aimpStr)))) {
+
+					aimpStr->SetData(const_cast<wchar_t*>(str), wcslen(str));
+					return aimpStr;
+				}
+			}
 			return nullptr;
 		}
 
@@ -94,6 +125,11 @@ namespace AIMPNowPlaying {
 		IAIMPConfig *GetConfig() {
 
 			return Config;
+		}
+
+		IAIMPServicePlayer *GetPlayer() {
+
+			return Player;
 		}
 
 	};

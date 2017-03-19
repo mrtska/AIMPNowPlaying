@@ -9,6 +9,7 @@ using CoreTweet;
 using CoreTweet.Core;
 using static CoreTweet.OAuth;
 using AIMPNowPlayingUI.ViewModels;
+using System.IO;
 
 namespace AIMPNowPlayingUI.Models {
     public class TwitterConnector : NotificationObject {
@@ -45,9 +46,32 @@ namespace AIMPNowPlayingUI.Models {
         }
 
 
-        public async void Tweet(string text) {
+        public void Tweet(string text, string jacketPath) {
 
-            await Token.Statuses.UpdateAsync(text);
+            if(Owner.CanTweet) {
+
+                if (Token == null) {
+
+                    Token = Tokens.Create(TwitterConstants.ConsumerKey, TwitterConstants.ConsumerSecret, Owner.AccessToken, Owner.AccessTokenSecret);
+                }
+
+                if(text.Length > 140) {
+
+                    text = text.Substring(0, 139) + "…";
+                }
+
+                if(jacketPath != null) {
+
+                    var result = Token.Media.Upload(new FileInfo(jacketPath));
+
+                    Token.Statuses.Update(status: text, media_ids: new long[] { result.MediaId }, tweet_mode: TweetMode.extended);
+                } else {
+
+                    Token.Statuses.Update(text, tweet_mode: TweetMode.extended);
+                }
+
+            }
+
         }
 
 

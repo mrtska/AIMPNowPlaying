@@ -1,10 +1,9 @@
 
 #include "AIMPNowPlaying.h"
-#include "aimp/apiOptions.h"
-#include "aimp/apiPlaylists.h"
+#include "AIMPActionEvent.h"
 #include <string>
+#include <sstream>
 #include <vcclr.h>
-#include <msclr/marshal.h>
 
 #include <comdef.h>
 
@@ -48,7 +47,6 @@ namespace AIMPNowPlaying {
 		AIMPNowPlayingUI::Views::MainWindow ^window = static_cast<AIMPNowPlayingUI::Views::MainWindow^>(sender);
 		AIMPNowPlayingUI::ViewModels::MainWindowViewModel ^vm = static_cast<AIMPNowPlayingUI::ViewModels::MainWindowViewModel^>(window->DataContext);
 
-		MessageBox(NULL, "Ý’è‚ð•Û‘¶‚·‚é‘O", "AIMPNowPlaying Plugin", MB_OK);
 
 		if (!String::IsNullOrEmpty(vm->AccessToken) && !String::IsNullOrEmpty(vm->AccessTokenSecret)) {
 
@@ -56,8 +54,6 @@ namespace AIMPNowPlaying {
 
 			//IAIMPCore *core = AIMPNowPlayingInstance->GetCore();
 
-			MessageBox(NULL, "Ý’è‚ª•Û‘¶‚³‚ê‚Ü‚µ‚½B", "AIMPNowPlaying Plugin", MB_OK);
-			
 			AIMPNowPlayingInstance->GetConfig()->SetValueAsString(AIMPNowPlayingInstance->CreateAIMPString(L"AIMPNowPlaying\\AccessToken"), AIMPNowPlayingInstance->CreateAIMPString(const_cast<wchar_t*>(context.marshal_as<const wchar_t*>(vm->AccessToken))));
 			AIMPNowPlayingInstance->GetConfig()->SetValueAsString(AIMPNowPlayingInstance->CreateAIMPString(L"AIMPNowPlaying\\AccessTokenSecret"), AIMPNowPlayingInstance->CreateAIMPString(const_cast<wchar_t*>(context.marshal_as<const wchar_t*>(vm->AccessTokenSecret))));
 		}
@@ -80,6 +76,20 @@ namespace AIMPNowPlaying {
 
 	}
 
+	void AIMPNowPlayingPlugin::Tweet(String ^text, String  ^jacketPath) {
+
+		AIMPNowPlayingUI::ViewModels::MainWindowViewModel ^vm = static_cast<AIMPNowPlayingUI::ViewModels::MainWindowViewModel^>(ViewModelRoot.Target);
+
+		if (vm->CanTweet) {
+
+			vm->Tweet(text, jacketPath);
+		} else {
+
+			MessageBox(NULL, "æ‚ÉÝ’è‰æ–Ê‚Å”FØ‚ð‚µ‚Ä‚­‚¾‚³‚¢B", "AIMP NowPlaying Plugin", MB_OK);
+		}
+
+	}
+
 	void AIMPNowPlayingPlugin::UIInitialize() {
 
 		AIMPNowPlayingUI::ViewModels::MainWindowViewModel ^vm = gcnew AIMPNowPlayingUI::ViewModels::MainWindowViewModel();
@@ -88,22 +98,17 @@ namespace AIMPNowPlaying {
 
 		IAIMPString *str;
 
-		MessageBox(NULL, "Ý’è‚ð“Ç‚Ýž‚Þ‘O", "AIMPNowPlaying Plugin", MB_OK);
 
 		if (SUCCEEDED(Config->GetValueAsString(CreateAIMPString(L"AIMPNowPlaying\\AccessToken"), &str))) {
 
-			MessageBox(NULL, "Ý’è“Ç‚Ýž‚Ý Token", "AIMPNowPlaying Plugin", MB_OK);
 			vm->AccessToken = gcnew String(str->GetData());
 		}
 
 		if (SUCCEEDED(Config->GetValueAsString(CreateAIMPString(L"AIMPNowPlaying\\AccessTokenSecret"), &str))) {
 
-			MessageBox(NULL, "Ý’è“Ç‚Ýž‚Ý Secret", "AIMPNowPlaying Plugin", MB_OK);
 			vm->AccessTokenSecret = gcnew String(str->GetData());
 			vm->CanTweet = true;
 		}
-
-
 	}
 
 	HRESULT WINAPI AIMPNowPlayingPlugin::Initialize(IAIMPCore *core) {
@@ -117,15 +122,66 @@ namespace AIMPNowPlaying {
 
 		if (FAILED(core->QueryInterface(IID_IAIMPConfig, reinterpret_cast<void**>(&Config)))) {
 
-			MessageBox(NULL, "‰Šú‰»‚ÉŽ¸”s‚µ‚Ü‚µ‚½B", "AIMPNowPlaying Plugin", MB_OK);
+			//MessageBox(NULL, "‰Šú‰»‚ÉŽ¸”s‚µ‚Ü‚µ‚½B IAIMPConfig", "AIMPNowPlaying Plugin", MB_OK);
 			return E_FAIL;
 		}
 
 		UIInitialize();
+
+		if (FAILED(core->QueryInterface(IID_IAIMPServiceMenuManager, reinterpret_cast<void**>(&MenuManager)))) {
+
+			//MessageBox(NULL, "‰Šú‰»‚ÉŽ¸”s‚µ‚Ü‚µ‚½B IAIMPServiceMenuManager", "AIMPNowPlaying Plugin", MB_OK);
+			return E_FAIL;
+		}
+
+		if (FAILED(core->QueryInterface(IID_IAIMPServiceActionManager, reinterpret_cast<void**>(&ActionManager)))) {
+
+			//MessageBox(NULL, "‰Šú‰»‚ÉŽ¸”s‚µ‚Ü‚µ‚½B IAIMPServiceActionManager", "AIMPNowPlaying Plugin", MB_OK);
+			return E_FAIL;
+		}
+
+		if (FAILED(core->QueryInterface(IID_IAIMPServiceAlbumArt, reinterpret_cast<void**>(&AlbumArt)))) {
+
+			MessageBox(NULL, "‰Šú‰»‚ÉŽ¸”s‚µ‚Ü‚µ‚½B IAIMPServiceAlbumArt", "AIMPNowPlaying Plugin", MB_OK);
+			return E_FAIL;
+		}
+
+		if (FAILED(core->QueryInterface(IID_IAIMPServicePlayer, reinterpret_cast<void**>(&Player)))) {
+
+			MessageBox(NULL, "‰Šú‰»‚ÉŽ¸”s‚µ‚Ü‚µ‚½B IAIMPServicePlayer", "AIMPNowPlaying Plugin", MB_OK);
+			return E_FAIL;
+		}
+
+		IAIMPMenuItem *playlistMenu;
+
+		if (FAILED(MenuManager->GetBuiltIn(AIMP_MENUID_PLAYER_MAIN_FUNCTIONS, &playlistMenu))) {
+
+			MessageBox(NULL, "‰Šú‰»‚ÉŽ¸”s‚µ‚Ü‚µ‚½B PlayListMenu", "AIMPNowPlaying Plugin", MB_OK);
+			return E_FAIL;
+		}
+
+		IAIMPMenuItem *nowPlayingMenu;
+
+		if (FAILED(core->CreateObject(IID_IAIMPMenuItem, reinterpret_cast<void**>(&nowPlayingMenu)))) {
+
+			//MessageBox(NULL, "‰Šú‰»‚ÉŽ¸”s‚µ‚Ü‚µ‚½B NowPlayingMenu", "AIMPNowPlaying Plugin", MB_OK);
+			return E_FAIL;
+		}
+		
+		nowPlayingMenu->SetValueAsObject(AIMP_MENUITEM_PROPID_PARENT, playlistMenu);
+		nowPlayingMenu->SetValueAsObject(AIMP_MENUITEM_PROPID_ID, CreateAIMPString(L"AIMPNowPlaying\\Menu"));
+		nowPlayingMenu->SetValueAsObject(AIMP_MENUITEM_PROPID_NAME, CreateAIMPString(L"NowPlayingô"));
+
+
+		nowPlayingMenu->SetValueAsObject(AIMP_MENUITEM_PROPID_EVENT, new AIMPActionEvent());
+
+		nowPlayingMenu->SetValueAsInt32(AIMP_MENUITEM_PROPID_ENABLED, true);
+		nowPlayingMenu->SetValueAsInt32(AIMP_MENUITEM_PROPID_STYLE, AIMP_MENUITEM_STYLE_NORMAL);
+		nowPlayingMenu->SetValueAsInt32(AIMP_MENUITEM_PROPID_VISIBLE, true);
 		
 
 
-
+		core->RegisterExtension(IID_IAIMPServiceMenuManager, nowPlayingMenu);
 
 		return S_OK;
 	}
@@ -140,6 +196,60 @@ namespace AIMPNowPlaying {
 	void WINAPI AIMPNowPlayingPlugin::SystemNotification(int NotifyID, IUnknown* Data) {
 
 
+	}
+	void AIMPActionEvent::OnExecute(IUnknown * Data) {
+
+		AIMPNowPlayingPlugin *Plugin = AIMPNowPlayingInstance;
+
+
+		IAIMPFileInfo *info;
+
+		String ^title;
+		String ^artist;
+		String ^album;
+
+
+		if (FAILED(Plugin->GetPlayer()->GetInfo(&info))) {
+
+			MessageBox(NULL, "‰Šú‰»‚ÉŽ¸”s‚µ‚Ü‚µ‚½B GetInfo", "AIMPNowPlaying Plugin", MB_OK);
+			return;
+		}
+
+		IAIMPString *str;
+
+		if (SUCCEEDED(info->GetValueAsObject(AIMP_FILEINFO_PROPID_TITLE, IID_IAIMPString, reinterpret_cast<void**>(&str)))) {
+
+			title = gcnew String(str->GetData());
+		}
+
+		if (SUCCEEDED(info->GetValueAsObject(AIMP_FILEINFO_PROPID_ARTIST, IID_IAIMPString, reinterpret_cast<void**>(&str)))) {
+
+			artist = gcnew String(str->GetData());
+		}
+
+		if (SUCCEEDED(info->GetValueAsObject(AIMP_FILEINFO_PROPID_ALBUM, IID_IAIMPString, reinterpret_cast<void**>(&str)))) {
+
+			album = gcnew String(str->GetData());
+		}
+
+		IAIMPImage *image;
+
+		if (SUCCEEDED(info->GetValueAsObject(AIMP_FILEINFO_PROPID_ALBUMART, IID_IAIMPImage, reinterpret_cast<void**>(&image)))) {
+
+			wchar_t buf[256];
+
+			GetTempPathW(256, buf);
+			if (FAILED(image->SaveToFile(Plugin->CreateAIMPString(gcnew String(buf) +  "aimp.png"), AIMP_IMAGE_FORMAT_PNG))) {
+
+				MessageBox(NULL, "‚Ù‚¼‚ñ‚É‚µ‚Á‚Ï‚¢", "", MB_OK);
+				return;
+			}
+
+			Plugin->Tweet("#NowPlaying " + title + " by " + artist, gcnew String(buf) + "aimp.png");
+		} else {
+
+			Plugin->Tweet("#NowPlaying " + title + " by " + artist, nullptr);
+		}
 	}
 }
 

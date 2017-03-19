@@ -7,8 +7,8 @@
         xmlns:v="clr-namespace:AIMPNowPlayingUI.Views"
         xmlns:vm="clr-namespace:AIMPNowPlayingUI.ViewModels"
         Title="AIMPNowPlaying Plugin"
-        Height="430"
-        Width="450"
+        Height="200"
+        Width="250"
         Topmost="True"
         >
 
@@ -38,12 +38,16 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
-
+                <TextBlock HorizontalAlignment="Right">
+                    <Hyperlink NavigateUri="https://github.com/CoreTweet/CoreTweet" RequestNavigate="Hyperlink_RequestNavigate">
+                        Powered by CoreTweet
+                    </Hyperlink>
+                </TextBlock>
 
 
             </StackPanel>
-            
-            
+
+
         </Grid>
 
     </Grid>

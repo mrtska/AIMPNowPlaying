@@ -128,6 +128,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(ProjectDir);$(ProjectDir)include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(ProjectDir);$(ProjectDir)include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -165,7 +168,7 @@
       <ModuleDefinitionFile>AIMPNowPlaying.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
-      <Command>powershell -ExecutionPolicy RemoteSigned -File "$(ProjectDir)build.ps1" "$(ProjectDir)" "$(TargetPath)"</Command>
+      <Command>powershell -ExecutionPolicy RemoteSigned -File "$(ProjectDir)build.ps1"  "$(ProjectDir)AIMPNowPlaying" "$(TargetPath)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
